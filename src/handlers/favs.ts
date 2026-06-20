@@ -28,7 +28,7 @@ composer.command("favs", async (ctx) => {
   try {
     const members = await redis.smembers(key);
     if (!members || members.length === 0) {
-      await ctx.reply("You have no favorites yet. Add some with /addfav <from>:<to>");
+      await ctx.reply("You have no favorites yet. Add some with /fav <from>:<to>");
       return;
     }
 

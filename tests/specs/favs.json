@@ -3,13 +3,13 @@
     "name": "/favs lists user favorites",
     "steps": [
       {
-        "send": { "text": "/addfav kg:lb", "userId": 100 },
+        "send": { "text": "/fav kg:lb", "userId": 100 },
         "expect": [
           { "method": "sendMessage", "payload": { "text": "Favorite added: kg:lb" } }
         ]
       },
       {
-        "send": { "text": "/addfav c:f", "userId": 100 },
+        "send": { "text": "/fav c:f", "userId": 100 },
         "expect": [
           { "method": "sendMessage", "payload": { "text": "Favorite added: c:f" } }
         ]
@@ -28,7 +28,7 @@
       {
         "send": { "text": "/favs", "userId": 101 },
         "expect": [
-          { "method": "sendMessage", "payload": { "text": "You have no favorites yet. Add some with /addfav <from>:<to>" } }
+          { "method": "sendMessage", "payload": { "text": "You have no favorites yet. Add some with /fav <from>:<to>" } }
         ]
       }
     ]
