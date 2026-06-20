@@ -13,6 +13,12 @@ function favKey(userId: number): string {
 const composer = new Composer<Ctx>();
 
 composer.command("fav", async (ctx) => {
+  const redis = getRedis();
+  if (!redis) {
+    await ctx.reply("Favorites storage is not available.");
+    return;
+  }
+
   const text = ctx.message?.text ?? "";
   const parts = text.trim().split(/\s+/);
 
@@ -55,12 +61,6 @@ composer.command("fav", async (ctx) => {
     await ctx.reply(
       `Cannot favorite "${fromUnit}" (${fromDef.category}) with "${toUnit}" (${toDef.category}). Units must be of the same type.`,
     );
-    return;
-  }
-
-  const redis = getRedis();
-  if (!redis) {
-    await ctx.reply("Favorites storage is not available.");
     return;
   }
 
