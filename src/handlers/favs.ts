@@ -2,7 +2,7 @@ import { Composer } from "grammy";
 import type { Ctx } from "../bot.js";
 import { getRedis } from "../redis.js";
 
-const FAV_KEY_PREFIX = "favs:";
+const FAV_KEY_PREFIX = "convertbuddy:favs:";
 
 function favKey(userId: number): string {
   return `${FAV_KEY_PREFIX}${userId}`;
