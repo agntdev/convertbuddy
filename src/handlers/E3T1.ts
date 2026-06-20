@@ -4,7 +4,7 @@ import { UNITS } from "./convert.js";
 import { getRedis } from "../redis.js";
 
 const MAX_FAVORITES = 100;
-const FAV_KEY_PREFIX = "favs:";
+const FAV_KEY_PREFIX = "convertbuddy:favs:";
 
 function favKey(userId: number): string {
   return `${FAV_KEY_PREFIX}${userId}`;
