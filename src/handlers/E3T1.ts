@@ -2,7 +2,7 @@ import { Composer } from "grammy";
 import type { Ctx } from "../bot.js";
 import { getRedis } from "../redis.js";
 
-const MAX_FAVORITES = 50;
+const MAX_FAVORITES = 100;
 const FAV_KEY_PREFIX = "favs:";
 
 function favKey(userId: number): string {
