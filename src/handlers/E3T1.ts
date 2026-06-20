@@ -1,0 +1,180 @@
+import { Composer } from "grammy";
+import { createRequire } from "node:module";
+import type { Ctx } from "../bot.js";
+
+const MAX_FAVORITES = 50;
+const FAV_KEY_PREFIX = "favs:";
+
+function favKey(userId: number): string {
+  return `${FAV_KEY_PREFIX}${userId}`;
+}
+
+let redisClient: {
+  sadd(key: string, ...members: string[]): Promise<number>;
+  srem(key: string, ...members: string[]): Promise<number>;
+  smembers(key: string): Promise<string[]>;
+  scard(key: string): Promise<number>;
+} | null = null;
+
+function getRedis() {
+  if (redisClient) return redisClient;
+  const url = process.env.REDIS_URL;
+  if (!url) return null;
+  try {
+    const req = createRequire(import.meta.url);
+    const ioredis = req("ioredis");
+    const Redis = ioredis.default ?? ioredis.Redis ?? ioredis;
+    redisClient = new Redis(url, { maxRetriesPerRequest: null, lazyConnect: false });
+    return redisClient;
+  } catch {
+    return null;
+  }
+}
+
+const composer = new Composer<Ctx>();
+
+composer.command("addfav", async (ctx) => {
+  const redis = getRedis();
+  if (!redis) {
+    await ctx.reply("Favorites storage is not available.");
+    return;
+  }
+
+  const text = ctx.message?.text ?? "";
+  const parts = text.trim().split(/\s+/);
+
+  if (parts.length < 2) {
+    await ctx.reply("Usage: /addfav <from>:<to>\nExample: /addfav km:miles");
+    return;
+  }
+
+  const favPair = parts[1];
+  if (!favPair.includes(":")) {
+    await ctx.reply("Format: <from>:<to>\nExample: /addfav km:miles");
+    return;
+  }
+
+  const userId = ctx.from?.id;
+  if (!userId) {
+    await ctx.reply("Could not identify user.");
+    return;
+  }
+
+  const key = favKey(userId);
+
+  try {
+    const count = await redis.scard(key);
+    if (count >= MAX_FAVORITES) {
+      await ctx.reply(
+        `You have reached the maximum of ${MAX_FAVORITES} favorites. Remove some with /delfav first.`,
+      );
+      return;
+    }
+
+    const added = await redis.sadd(key, favPair);
+    if (added > 0) {
+      await ctx.reply(`Favorite added: ${favPair}`);
+    } else {
+      await ctx.reply(`"${favPair}" is already in your favorites.`);
+    }
+  } catch {
+    await ctx.reply("Failed to save favorite.");
+  }
+});
+
+composer.command("delfav", async (ctx) => {
+  const redis = getRedis();
+  if (!redis) {
+    await ctx.reply("Favorites storage is not available.");
+    return;
+  }
+
+  const text = ctx.message?.text ?? "";
+  const parts = text.trim().split(/\s+/);
+
+  if (parts.length < 2) {
+    await ctx.reply("Usage: /delfav <from>:<to>\nExample: /delfav km:miles");
+    return;
+  }
+
+  const favPair = parts[1];
+
+  const userId = ctx.from?.id;
+  if (!userId) {
+    await ctx.reply("Could not identify user.");
+    return;
+  }
+
+  const key = favKey(userId);
+
+  try {
+    const removed = await redis.srem(key, favPair);
+    if (removed > 0) {
+      await ctx.reply(`Favorite removed: ${favPair}`);
+    } else {
+      await ctx.reply(`"${favPair}" was not in your favorites.`);
+    }
+  } catch {
+    await ctx.reply("Failed to remove favorite.");
+  }
+});
+
+composer.command("favs", async (ctx) => {
+  const redis = getRedis();
+  if (!redis) {
+    await ctx.reply("Favorites storage is not available.");
+    return;
+  }
+
+  const userId = ctx.from?.id;
+  if (!userId) {
+    await ctx.reply("Could not identify user.");
+    return;
+  }
+
+  const key = favKey(userId);
+
+  try {
+    const members = await redis.smembers(key);
+    if (!members || members.length === 0) {
+      await ctx.reply("You have no favorites yet. Add some with /addfav <from>:<to>");
+      return;
+    }
+
+    const list = (members as string[]).sort().join("\n");
+    await ctx.reply(`Your favorites:\n${list}`);
+  } catch {
+    await ctx.reply("Failed to retrieve favorites.");
+  }
+});
+
+composer.callbackQuery("menu:favs", async (ctx) => {
+  const redis = getRedis();
+  if (!redis) {
+    await ctx.answerCallbackQuery({ text: "Favorites storage is not available." });
+    return;
+  }
+
+  const userId = ctx.from?.id;
+  if (!userId) {
+    await ctx.answerCallbackQuery({ text: "Could not identify user." });
+    return;
+  }
+
+  const key = favKey(userId);
+
+  try {
+    const members = await redis.smembers(key);
+    if (!members || members.length === 0) {
+      await ctx.answerCallbackQuery({ text: "No favorites yet. Add some with /addfav <from>:<to>" });
+      return;
+    }
+    const list = (members as string[]).sort().join(", ");
+    await ctx.answerCallbackQuery({ text: `Favorites: ${list}` });
+    await ctx.reply(`Your favorites:\n${(members as string[]).sort().join("\n")}`);
+  } catch {
+    await ctx.answerCallbackQuery({ text: "Failed to retrieve favorites." });
+  }
+});
+
+export default composer;

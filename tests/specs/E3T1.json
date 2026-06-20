@@ -1,0 +1,108 @@
+[
+  {
+    "name": "/addfav and /favs — add and list favorites",
+    "steps": [
+      {
+        "send": { "text": "/addfav km:miles", "userId": 1 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Favorite added: km:miles" } }
+        ]
+      },
+      {
+        "send": { "text": "/addfav c:f", "userId": 1 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Favorite added: c:f" } }
+        ]
+      },
+      {
+        "send": { "text": "/favs", "userId": 1 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Your favorites:\nc:f\nkm:miles" } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/addfav duplicate",
+    "steps": [
+      {
+        "send": { "text": "/addfav km:miles", "userId": 1 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "\"km:miles\" is already in your favorites." } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/delfav — remove a favorite",
+    "steps": [
+      {
+        "send": { "text": "/delfav km:miles", "userId": 1 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Favorite removed: km:miles" } }
+        ]
+      },
+      {
+        "send": { "text": "/favs", "userId": 1 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Your favorites:\nc:f" } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/delfav nonexistent",
+    "steps": [
+      {
+        "send": { "text": "/delfav nonexistent", "userId": 2 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "\"nonexistent\" was not in your favorites." } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/favs empty",
+    "steps": [
+      {
+        "send": { "text": "/favs", "userId": 3 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "You have no favorites yet. Add some with /addfav <from>:<to>" } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/addfav validation — missing argument",
+    "steps": [
+      {
+        "send": { "text": "/addfav", "userId": 4 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Usage: /addfav <from>:<to>\nExample: /addfav km:miles" } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/addfav validation — bad format",
+    "steps": [
+      {
+        "send": { "text": "/addfav badformat", "userId": 4 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Format: <from>:<to>\nExample: /addfav km:miles" } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/delfav validation — missing argument",
+    "steps": [
+      {
+        "send": { "text": "/delfav", "userId": 4 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Usage: /delfav <from>:<to>\nExample: /delfav km:miles" } }
+        ]
+      }
+    ]
+  }
+]
