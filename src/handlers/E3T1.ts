@@ -1,5 +1,6 @@
 import { Composer } from "grammy";
 import type { Ctx } from "../bot.js";
+import { UNITS } from "./convert.js";
 import { getRedis } from "../redis.js";
 
 const MAX_FAVORITES = 100;
@@ -41,6 +42,28 @@ composer.command("addfav", async (ctx) => {
     return;
   }
 
+  const fromUnit = fromPart.toLowerCase();
+  const toUnit = toPart.toLowerCase();
+  const normalizedPair = `${fromUnit}:${toUnit}`;
+
+  const fromDef = UNITS[fromUnit];
+  const toDef = UNITS[toUnit];
+
+  if (!fromDef) {
+    await ctx.reply(`Unknown unit: "${fromUnit}". Try /addfav km:miles`);
+    return;
+  }
+  if (!toDef) {
+    await ctx.reply(`Unknown unit: "${toUnit}". Try /addfav km:miles`);
+    return;
+  }
+  if (fromDef.category !== toDef.category) {
+    await ctx.reply(
+      `Cannot favorite "${fromUnit}" (${fromDef.category}) with "${toUnit}" (${toDef.category}). Units must be of the same type.`,
+    );
+    return;
+  }
+
   const userId = ctx.from?.id;
   if (!userId) {
     await ctx.reply("Could not identify user.");
@@ -58,11 +81,11 @@ composer.command("addfav", async (ctx) => {
       return;
     }
 
-    const added = await redis.sadd(key, favPair);
+    const added = await redis.sadd(key, normalizedPair);
     if (added > 0) {
-      await ctx.reply(`Favorite added: ${favPair}`);
+      await ctx.reply(`Favorite added: ${normalizedPair}`);
     } else {
-      await ctx.reply(`"${favPair}" is already in your favorites.`);
+      await ctx.reply(`"${normalizedPair}" is already in your favorites.`);
     }
   } catch {
     await ctx.reply("Failed to save favorite.");

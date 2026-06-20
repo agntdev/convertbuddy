@@ -1,0 +1,46 @@
+[
+  {
+    "name": "/addfav validation — unknown from unit",
+    "steps": [
+      {
+        "send": { "text": "/addfav banana:miles", "userId": 1 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Unknown unit: \"banana\". Try /addfav km:miles" } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/addfav validation — unknown to unit",
+    "steps": [
+      {
+        "send": { "text": "/addfav km:potato", "userId": 1 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Unknown unit: \"potato\". Try /addfav km:miles" } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/addfav validation — category mismatch",
+    "steps": [
+      {
+        "send": { "text": "/addfav km:c", "userId": 1 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Cannot favorite \"km\" (length) with \"c\" (temperature). Units must be of the same type." } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/addfav validation — both units unknown",
+    "steps": [
+      {
+        "send": { "text": "/addfav banana:potato", "userId": 1 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Unknown unit: \"banana\". Try /addfav km:miles" } }
+        ]
+      }
+    ]
+  }
+]
