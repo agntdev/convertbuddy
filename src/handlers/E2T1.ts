@@ -28,13 +28,17 @@ composer.command("fav", async (ctx) => {
   }
 
   const colonIdx = favPair.indexOf(":");
-  const fromUnit = favPair.slice(0, colonIdx).trim().toLowerCase();
-  const toUnit = favPair.slice(colonIdx + 1).trim().toLowerCase();
+  const fromPart = favPair.slice(0, colonIdx).trim();
+  const toPart = favPair.slice(colonIdx + 1).trim();
 
-  if (!fromUnit || !toUnit) {
+  if (!fromPart || !toPart) {
     await ctx.reply("Format: <from>:<to>\nExample: /fav km:miles");
     return;
   }
+
+  const fromUnit = fromPart.toLowerCase();
+  const toUnit = toPart.toLowerCase();
+  const normalizedPair = `${fromUnit}:${toUnit}`;
 
   const fromDef = UNITS[fromUnit];
   const toDef = UNITS[toUnit];
@@ -77,11 +81,11 @@ composer.command("fav", async (ctx) => {
       return;
     }
 
-    const added = await redis.sadd(key, favPair);
+    const added = await redis.sadd(key, normalizedPair);
     if (added > 0) {
-      await ctx.reply(`Favorite added: ${favPair}`);
+      await ctx.reply(`Favorite added: ${normalizedPair}`);
     } else {
-      await ctx.reply(`"${favPair}" is already in your favorites.`);
+      await ctx.reply(`"${normalizedPair}" is already in your favorites.`);
     }
   } catch {
     await ctx.reply("Failed to save favorite.");
