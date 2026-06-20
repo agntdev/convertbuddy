@@ -164,4 +164,25 @@ composer.callbackQuery("menu:favs", async (ctx) => {
   }
 });
 
+composer.callbackQuery("menu:convert", async (ctx) => {
+  await ctx.answerCallbackQuery();
+  await ctx.reply(
+    "Usage: /convert <value> <from_unit> to <to_unit>\n" +
+    "Example: /convert 100 km to miles",
+  );
+});
+
+composer.callbackQuery("menu:help", async (ctx) => {
+  await ctx.answerCallbackQuery();
+  await ctx.reply(
+    "Available commands:\n" +
+    "/start — Start the bot\n" +
+    "/convert — Convert units\n" +
+    "/addfav — Add a favorite unit pair\n" +
+    "/delfav — Remove a favorite unit pair\n" +
+    "/favs — List your favorites\n" +
+    "/help — Show this help message",
+  );
+});
+
 export default composer;
