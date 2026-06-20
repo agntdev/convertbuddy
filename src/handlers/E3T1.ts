@@ -13,12 +13,6 @@ function favKey(userId: number): string {
 const composer = new Composer<Ctx>();
 
 composer.command("addfav", async (ctx) => {
-  const redis = getRedis();
-  if (!redis) {
-    await ctx.reply("Favorites storage is not available.");
-    return;
-  }
-
   const text = ctx.message?.text ?? "";
   const parts = text.trim().split(/\s+/);
 
@@ -64,6 +58,12 @@ composer.command("addfav", async (ctx) => {
     return;
   }
 
+  const redis = getRedis();
+  if (!redis) {
+    await ctx.reply("Favorites storage is not available.");
+    return;
+  }
+
   const userId = ctx.from?.id;
   if (!userId) {
     await ctx.reply("Could not identify user.");
@@ -93,12 +93,6 @@ composer.command("addfav", async (ctx) => {
 });
 
 composer.command("delfav", async (ctx) => {
-  const redis = getRedis();
-  if (!redis) {
-    await ctx.reply("Favorites storage is not available.");
-    return;
-  }
-
   const text = ctx.message?.text ?? "";
   const parts = text.trim().split(/\s+/);
 
@@ -108,6 +102,12 @@ composer.command("delfav", async (ctx) => {
   }
 
   const favPair = parts[1];
+
+  const redis = getRedis();
+  if (!redis) {
+    await ctx.reply("Favorites storage is not available.");
+    return;
+  }
 
   const userId = ctx.from?.id;
   if (!userId) {
