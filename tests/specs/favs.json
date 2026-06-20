@@ -1,0 +1,36 @@
+[
+  {
+    "name": "/favs lists user favorites",
+    "steps": [
+      {
+        "send": { "text": "/addfav kg:lb", "userId": 100 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Favorite added: kg:lb" } }
+        ]
+      },
+      {
+        "send": { "text": "/addfav c:f", "userId": 100 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Favorite added: c:f" } }
+        ]
+      },
+      {
+        "send": { "text": "/favs", "userId": 100 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Your favorites:\nc:f\nkg:lb" } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/favs shows empty message when no favorites",
+    "steps": [
+      {
+        "send": { "text": "/favs", "userId": 101 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "You have no favorites yet. Add some with /addfav <from>:<to>" } }
+        ]
+      }
+    ]
+  }
+]
