@@ -70,7 +70,7 @@ composer.command("fav", async (ctx) => {
   try {
     const added = await redis.sadd(key, favPair);
     if (added > 0) {
-      await ctx.reply(`Favorite saved: ${favPair}`);
+      await ctx.reply(`Favorite added: ${favPair}`);
     } else {
       await ctx.reply(`"${favPair}" is already in your favorites.`);
     }

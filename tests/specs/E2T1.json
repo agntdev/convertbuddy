@@ -5,7 +5,7 @@
       {
         "send": { "text": "/fav km:miles", "userId": 11 },
         "expect": [
-          { "method": "sendMessage", "payload": { "text": "Favorite saved: km:miles" } }
+          { "method": "sendMessage", "payload": { "text": "Favorite added: km:miles" } }
         ]
       }
     ]
@@ -27,13 +27,13 @@
       {
         "send": { "text": "/fav c:f", "userId": 12 },
         "expect": [
-          { "method": "sendMessage", "payload": { "text": "Favorite saved: c:f" } }
+          { "method": "sendMessage", "payload": { "text": "Favorite added: c:f" } }
         ]
       },
       {
         "send": { "text": "/fav gal:l", "userId": 12 },
         "expect": [
-          { "method": "sendMessage", "payload": { "text": "Favorite saved: gal:l" } }
+          { "method": "sendMessage", "payload": { "text": "Favorite added: gal:l" } }
         ]
       }
     ]
