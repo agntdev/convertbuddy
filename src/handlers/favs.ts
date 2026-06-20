@@ -1,30 +1,11 @@
 import { Composer } from "grammy";
-import { createRequire } from "node:module";
 import type { Ctx } from "../bot.js";
+import { getRedis } from "../redis.js";
 
 const FAV_KEY_PREFIX = "favs:";
 
 function favKey(userId: number): string {
   return `${FAV_KEY_PREFIX}${userId}`;
-}
-
-let redisClient: {
-  smembers(key: string): Promise<string[]>;
-} | null = null;
-
-function getRedis() {
-  if (redisClient) return redisClient;
-  const url = process.env.REDIS_URL;
-  if (!url) return null;
-  try {
-    const req = createRequire(import.meta.url);
-    const ioredis = req("ioredis");
-    const Redis = ioredis.default ?? ioredis.Redis ?? ioredis;
-    redisClient = new Redis(url, { maxRetriesPerRequest: null, lazyConnect: false });
-    return redisClient;
-  } catch {
-    return null;
-  }
 }
 
 const composer = new Composer<Ctx>();
