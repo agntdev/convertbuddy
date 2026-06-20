@@ -54,6 +54,15 @@ composer.command("addfav", async (ctx) => {
     return;
   }
 
+  const colonIdx = favPair.indexOf(":");
+  const fromPart = favPair.slice(0, colonIdx).trim();
+  const toPart = favPair.slice(colonIdx + 1).trim();
+
+  if (!fromPart || !toPart) {
+    await ctx.reply("Format: <from>:<to>\nExample: /addfav km:miles");
+    return;
+  }
+
   const userId = ctx.from?.id;
   if (!userId) {
     await ctx.reply("Could not identify user.");
