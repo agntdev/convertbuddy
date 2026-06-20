@@ -1,0 +1,25 @@
+[
+  {
+    "name": "/start replies with welcome and main menu",
+    "steps": [
+      {
+        "send": { "text": "/start" },
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": {
+              "text": "Welcome! I am ready to help.",
+              "reply_markup": {
+                "inline_keyboard": [
+                  [{ "text": "Convert", "callback_data": "menu:convert" }],
+                  [{ "text": "Favorites", "callback_data": "menu:favs" }],
+                  [{ "text": "Help", "callback_data": "menu:help" }]
+                ]
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+]
