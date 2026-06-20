@@ -1,0 +1,128 @@
+[
+  {
+    "name": "/convert 100 km to miles",
+    "steps": [
+      {
+        "send": { "text": "/convert 100 km to miles" },
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": { "text": "100 km = 62.1371 miles" }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/convert 5 kg to lb",
+    "steps": [
+      {
+        "send": { "text": "/convert 5 kg to lb" },
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": { "text": "5 kg = 11.0231 lb" }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/convert 25 C to F (temperature)",
+    "steps": [
+      {
+        "send": { "text": "/convert 25 C to F" },
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": { "text": "25 c = 77 f" }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/convert 1 gal to l (volume)",
+    "steps": [
+      {
+        "send": { "text": "/convert 1 gal to l" },
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": { "text": "1 gal = 3.78541 l" }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/convert with no args shows usage",
+    "steps": [
+      {
+        "send": { "text": "/convert" },
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": { "text": "Invalid format. Usage: /convert <value> <from_unit> to <to_unit>\nExample: /convert 100 km to miles" }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/convert with invalid number",
+    "steps": [
+      {
+        "send": { "text": "/convert abc km to miles" },
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": { "text": "\"abc\" is not a valid number." }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/convert with unknown from unit",
+    "steps": [
+      {
+        "send": { "text": "/convert 100 xyz to miles" },
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": { "text": "Unknown unit: \"xyz\". Try /convert 100 km to miles" }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/convert with unknown to unit",
+    "steps": [
+      {
+        "send": { "text": "/convert 100 km to xyz" },
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": { "text": "Unknown unit: \"xyz\". Try /convert 100 km to miles" }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/convert with mismatched categories",
+    "steps": [
+      {
+        "send": { "text": "/convert 100 km to kg" },
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": { "text": "Cannot convert \"km\" (length) to \"kg\" (weight). Units must be of the same type." }
+          }
+        ]
+      }
+    ]
+  }
+]
