@@ -124,6 +124,13 @@ composer.command("delfav", async (ctx) => {
 
   const key = favKey(userId);
 
+  const normalizedPair = favPair.includes(":")
+    ? (() => {
+        const ci = favPair.indexOf(":");
+        return `${favPair.slice(0, ci).trim().toLowerCase()}:${favPair.slice(ci + 1).trim().toLowerCase()}`;
+      })()
+    : favPair;
+
   try {
     const removed = await redis.srem(key, normalizedPair);
     if (removed > 0) {
