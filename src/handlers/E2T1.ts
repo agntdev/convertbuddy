@@ -3,6 +3,7 @@ import type { Ctx } from "../bot.js";
 import { UNITS } from "./convert.js";
 import { getRedis } from "../redis.js";
 
+const MAX_FAVORITES = 100;
 const FAV_KEY_PREFIX = "convertbuddy:favs:";
 
 function favKey(userId: number): string {
@@ -68,6 +69,14 @@ composer.command("fav", async (ctx) => {
   const key = favKey(userId);
 
   try {
+    const count = await redis.scard(key);
+    if (count >= MAX_FAVORITES) {
+      await ctx.reply(
+        `You have reached the maximum of ${MAX_FAVORITES} favorites. Remove some with /delfav first.`,
+      );
+      return;
+    }
+
     const added = await redis.sadd(key, favPair);
     if (added > 0) {
       await ctx.reply(`Favorite added: ${favPair}`);
