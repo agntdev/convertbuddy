@@ -117,12 +117,19 @@ composer.command("delfav", async (ctx) => {
 
   const key = favKey(userId);
 
+  const normalizedPair = favPair.includes(":")
+    ? (() => {
+        const ci = favPair.indexOf(":");
+        return `${favPair.slice(0, ci).trim().toLowerCase()}:${favPair.slice(ci + 1).trim().toLowerCase()}`;
+      })()
+    : favPair;
+
   try {
-    const removed = await redis.srem(key, favPair);
+    const removed = await redis.srem(key, normalizedPair);
     if (removed > 0) {
-      await ctx.reply(`Favorite removed: ${favPair}`);
+      await ctx.reply(`Favorite removed: ${normalizedPair}`);
     } else {
-      await ctx.reply(`"${favPair}" was not in your favorites.`);
+      await ctx.reply(`"${normalizedPair}" was not in your favorites.`);
     }
   } catch {
     await ctx.reply("Failed to remove favorite.");
