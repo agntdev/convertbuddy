@@ -79,7 +79,11 @@ export function getRedis() {
       });
 
       const fallback = createMemoryClient();
-      _redisClient = client;
+      _redisClient = fallback;
+
+      client.on("ready", () => {
+        _redisClient = client;
+      });
 
       client.on("error", () => {
         _redisClient = fallback;
