@@ -1,0 +1,96 @@
+[
+  {
+    "name": "/fav saves a valid unit pair",
+    "steps": [
+      {
+        "send": { "text": "/fav km:miles", "userId": 11 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Favorite saved: km:miles" } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/fav duplicate",
+    "steps": [
+      {
+        "send": { "text": "/fav km:miles", "userId": 11 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "\"km:miles\" is already in your favorites." } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/fav saves different unit pairs",
+    "steps": [
+      {
+        "send": { "text": "/fav c:f", "userId": 12 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Favorite saved: c:f" } }
+        ]
+      },
+      {
+        "send": { "text": "/fav gal:l", "userId": 12 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Favorite saved: gal:l" } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/fav validation — missing argument",
+    "steps": [
+      {
+        "send": { "text": "/fav", "userId": 13 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Usage: /fav <from>:<to>\nExample: /fav km:miles" } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/fav validation — bad format",
+    "steps": [
+      {
+        "send": { "text": "/fav badformat", "userId": 13 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Format: <from>:<to>\nExample: /fav km:miles" } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/fav validation — unknown from unit",
+    "steps": [
+      {
+        "send": { "text": "/fav xyz:miles", "userId": 13 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Unknown unit: \"xyz\". Try /fav km:miles" } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/fav validation — unknown to unit",
+    "steps": [
+      {
+        "send": { "text": "/fav km:xyz", "userId": 13 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Unknown unit: \"xyz\". Try /fav km:miles" } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/fav validation — category mismatch",
+    "steps": [
+      {
+        "send": { "text": "/fav km:kg", "userId": 13 },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "Cannot favorite \"km\" (length) with \"kg\" (weight). Units must be of the same type." } }
+        ]
+      }
+    ]
+  }
+]

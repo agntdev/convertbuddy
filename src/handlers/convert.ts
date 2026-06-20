@@ -9,7 +9,7 @@ interface UnitDef {
   fromBase: (v: number) => number;
 }
 
-const UNITS: Record<string, UnitDef> = {
+export const UNITS: Record<string, UnitDef> = {
   m: { category: "length", toBase: (v) => v, fromBase: (v) => v },
   km: { category: "length", toBase: (v) => v * 1000, fromBase: (v) => v / 1000 },
   cm: { category: "length", toBase: (v) => v * 0.01, fromBase: (v) => v / 0.01 },
